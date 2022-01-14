@@ -1,41 +1,32 @@
 //Get Player Input
-key_left = keyboard_check(vk_left);
-key_right = keyboard_check(vk_right);
+left = keyboard_check(vk_left);
+right = keyboard_check(vk_right);
 key_jump = keyboard_check(vk_space);
 
 //Calculate Movement
-var move = key_right - key_left;
+var keyPressed = right - left;
+var grounded = place_meeting(x,y+1,o_wall);
 
-hsp = move * walksp;
-vsp = vsp + grv;
+//temporary values
+var gAcc = 0.1;
+var gDecc = 0.12;
+var airAcc = 0.09;
+var airDecc = 0.1;
 
-//jump
-if(place_meeting(x,y+1,o_wall) && (key_jump)){
-	
-	vsp= -7;
-	
+if (grounded) {
+//Jump
+	jump(key_jump);
+
+//Smoothness Jump
+	entityAcceleration(keyPressed, gAcc, gDecc, maxSp);
+} else {
+	vsp += grv;
+	entityAcceleration(keyPressed, airAcc, airDecc, maxSp/1.5);
 }
 
-//Horizontal Collision
-if(place_meeting(x+hsp,y,o_wall)) {
-	
-	while(!place_meeting(x+sign(hsp),y,o_wall)) {
-		x = x + sign(hsp);
-	}
-	hsp = 0;
-	
-}
+//Horizontal smooth Movement
+entityAcceleration(keyPressed, acc, decc, maxSp);
 
-x = x + hsp;
 
-//Vertical Collision
-if(place_meeting(x,y+vsp,o_wall)) {
-	
-	while(!place_meeting(x,y+sign(vsp),o_wall)) {
-		y = y + sign(vsp);
-	}
-	vsp = 0;
-	
-}
 
-y = y + vsp;
+plCollisions(o_wall);
