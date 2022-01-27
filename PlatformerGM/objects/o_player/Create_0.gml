@@ -4,6 +4,7 @@ maxSp = 4;
 acc = 0.05;
 decc = 0.2;
 grv = 0.3;
+jump_value = 7;
 
 
 
